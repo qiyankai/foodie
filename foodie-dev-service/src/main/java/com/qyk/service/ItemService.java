@@ -92,9 +92,15 @@ public interface ItemService {
 
     /**
      * 根据id获取相应的商品主图
-     * @param specId
+     * @param itemId
      * @return
      */
     String queryItemMainImgById(String itemId);
 
+    /**
+     * 扣除库存数量
+     * @param itemSpecId
+     * @param buyCounts
+     */
+    void decreaseItemSpecStock(String itemSpecId,Integer buyCounts);
 }

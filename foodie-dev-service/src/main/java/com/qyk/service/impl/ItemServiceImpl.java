@@ -156,22 +156,6 @@ public class ItemServiceImpl implements ItemService {
         return itemsMapperCustom.queryItemsBySpecIds(specIdsList);
     }
 
-    @Override
-    public ItemsSpec queryItemSpecById(String specId) {
-        return itemsSpecMapper.selectByPrimaryKey(specId);
-    }
-
-    @Override
-    public String queryItemMainImgById(String itemId) {
-        ItemsImg itemsImg = new ItemsImg();
-        itemsImg.setItemId(itemId);
-        itemsImg.setIsMain(YesOrNo.YES.type);
-        ItemsImg resultImg = itemsImgMapper.selectOne(itemsImg);
-        // todo 来张默认图片
-        String mainImgOnNullUrl = "";
-        return resultImg == null ? mainImgOnNullUrl : resultImg.getUrl();
-    }
-
     private PagedGridResult setterPagedGrid(List<?> list, Integer page) {
         PageInfo<?> pageList = new PageInfo<>(list);
         PagedGridResult grid = new PagedGridResult();
@@ -192,5 +176,34 @@ public class ItemServiceImpl implements ItemService {
         return itemsCommentsMapper.selectCount(condition);
     }
 
+    @Override
+    public ItemsSpec queryItemSpecById(String specId) {
+        return itemsSpecMapper.selectByPrimaryKey(specId);
+    }
+
+    @Override
+    public String queryItemMainImgById(String itemId) {
+        ItemsImg itemsImg = new ItemsImg();
+        itemsImg.setItemId(itemId);
+        itemsImg.setIsMain(YesOrNo.YES.type);
+        ItemsImg resultImg = itemsImgMapper.selectOne(itemsImg);
+        // todo 来张默认图片
+        String mainImgOnNullUrl = "";
+        return resultImg == null ? mainImgOnNullUrl : resultImg.getUrl();
+    }
+
+    @Transactional(propagation = Propagation.REQUIRED)
+    @Override
+    public void decreaseItemSpecStock(String itemSpecId,Integer buyCounts){
+        ItemsSpec itemsSpec = itemsSpecMapper.selectByPrimaryKey(itemSpecId);
+        Integer itemsSpecStock = itemsSpec.getStock();
+
+        int result = itemsMapperCustom.decreaseItemSpecStock(itemSpecId, buyCounts);
+        if (result != 1) {
+            throw new RuntimeException("订单创建失败，原因：库存不足！");
+        }
+
+
+    }
 
 }

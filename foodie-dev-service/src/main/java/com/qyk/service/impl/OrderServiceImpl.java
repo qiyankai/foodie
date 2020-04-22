@@ -1,28 +1,32 @@
 package com.qyk.service.impl;
 
+import com.qyk.enums.OrderStatusEnum;
 import com.qyk.enums.YesOrNo;
-import com.qyk.mapper.CarouselMapper;
+import com.qyk.mapper.OrderItemsMapper;
+import com.qyk.mapper.OrderStatusMapper;
 import com.qyk.mapper.OrdersMapper;
-import com.qyk.mapper.UserAddressMapper;
 import com.qyk.pojo.*;
 import com.qyk.pojo.bo.SubmitOrderBO;
-import com.qyk.service.CarouselService;
 import com.qyk.service.OrderService;
 import org.n3r.idworker.Sid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
-import tk.mybatis.mapper.entity.Example;
 
 import java.util.Date;
-import java.util.List;
 
 @Service
 public class OrderServiceImpl implements OrderService {
 
     @Autowired
     private OrdersMapper ordersMapper;
+
+    @Autowired
+    private OrderItemsMapper orderItemsMapper;
+
+    @Autowired
+    private OrderStatusMapper orderStatusMapper;
 
     @Autowired
     private AddressServiceImpl addressService;
@@ -35,7 +39,7 @@ public class OrderServiceImpl implements OrderService {
 
     @Transactional(propagation = Propagation.REQUIRED)
     @Override
-    public void create(SubmitOrderBO submitOrderBO) {
+    public String create(SubmitOrderBO submitOrderBO) {
         // 1。新订单保存
         Integer payMethod = submitOrderBO.getPayMethod();
         String addressId = submitOrderBO.getAddressId();
@@ -48,8 +52,8 @@ public class OrderServiceImpl implements OrderService {
         UserAddress userAddress = addressService.queryUserAddress(userId, addressId);
 
         Orders newOrders = new Orders();
-
-        newOrders.setId(sid.nextShort());
+        String orderId = sid.nextShort();
+        newOrders.setId(orderId);
         newOrders.setUserId(userId);
         newOrders.setReceiverName(userAddress.getReceiver());
         newOrders.setReceiverAddress(userAddress.getProvince()
@@ -58,8 +62,6 @@ public class OrderServiceImpl implements OrderService {
         newOrders.setReceiverMobile(userAddress.getMobile());
 
         // todo 计算价格
-//        newOrders.setTotalAmount();
-//        newOrders.setRealPayAmount();
         newOrders.setPostAmount(postAmount);
 
         newOrders.setPayMethod(payMethod);
@@ -78,15 +80,43 @@ public class OrderServiceImpl implements OrderService {
             // todo 整合redis后，商品购买数量由redis中获取
             int buyCounts = 1;
 
-            // 2。1根据规格获取价格
+            // 2。1 根据规格获取价格
             totalAmount += itemsSpec.getPriceNormal() * buyCounts;
             realPayAmount += itemsSpec.getPriceDiscount() * buyCounts;
 
             // 2。2 根据商品id，获取商品的信息与图片
-            Items items = itemService.queryItemById(itemsSpec.getItemId());
-            String mainImgUrl = itemService.queryItemMainImgById(itemsSpec.getItemId());
+            String itemId = itemsSpec.getItemId();
+            Items items = itemService.queryItemById(itemId);
+            String mainImgUrl = itemService.queryItemMainImgById(itemId);
+
+            // 2。3 保存子订单
+            String subOrderId = sid.nextShort();
+            OrderItems subOrderItems = new OrderItems();
+            subOrderItems.setId(subOrderId);
+            subOrderItems.setOrderId(orderId);
+            subOrderItems.setItemId(itemId);
+            subOrderItems.setItemImg(mainImgUrl);
+            subOrderItems.setItemName(items.getItemName());
+            subOrderItems.setBuyCounts(buyCounts);
+            subOrderItems.setItemSpecId(itemSpecId);
+            subOrderItems.setItemSpecName(itemsSpec.getName());
+            subOrderItems.setPrice(itemsSpec.getPriceDiscount());
+            orderItemsMapper.insert(subOrderItems);
+
+            // 2。4提交订单后，规格表中，需要扣除库存
+            itemService.decreaseItemSpecStock(itemSpecId,buyCounts);
         }
 
+        newOrders.setTotalAmount(totalAmount);
+        newOrders.setRealPayAmount(realPayAmount);
+        ordersMapper.insert(newOrders);
+        // 3保存订单状态表
+        OrderStatus waitPayOrderStatus = new OrderStatus();
+        waitPayOrderStatus.setOrderId(orderId);
+        waitPayOrderStatus.setOrderStatus(OrderStatusEnum.WAIT_DELIVER.type);
+        waitPayOrderStatus.setCreatedTime(new Date());
+        orderStatusMapper.insert(waitPayOrderStatus);
 
+        return orderId;
     }
 }
