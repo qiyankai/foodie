@@ -38,7 +38,7 @@ public class OrderController extends BaseController{
         // todo 从redis中取出该清除的购物车物品，现在直接清空
 //        CookieUtils.setCookie(request,response,FOODIE_SHOPCART,"");
         // 3. 向支付中心发送放前订单，用于保存支付中心的订单数据
-
+//预计
         return JSONResult.ok(orderId);
     }
 
