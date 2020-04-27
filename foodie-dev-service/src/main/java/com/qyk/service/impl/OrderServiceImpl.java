@@ -7,6 +7,8 @@ import com.qyk.mapper.OrderStatusMapper;
 import com.qyk.mapper.OrdersMapper;
 import com.qyk.pojo.*;
 import com.qyk.pojo.bo.SubmitOrderBO;
+import com.qyk.pojo.vo.MerchantOrdersVO;
+import com.qyk.pojo.vo.OrderVO;
 import com.qyk.service.OrderService;
 import org.n3r.idworker.Sid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -39,7 +41,7 @@ public class OrderServiceImpl implements OrderService {
 
     @Transactional(propagation = Propagation.REQUIRED)
     @Override
-    public String create(SubmitOrderBO submitOrderBO) {
+    public OrderVO create(SubmitOrderBO submitOrderBO) {
         // 1。新订单保存
         Integer payMethod = submitOrderBO.getPayMethod();
         String addressId = submitOrderBO.getAddressId();
@@ -47,6 +49,7 @@ public class OrderServiceImpl implements OrderService {
         String leftMsg = submitOrderBO.getLeftMsg();
         String userId = submitOrderBO.getUserId();
 
+        //运费，暂时设置为0
         Integer postAmount = 0;
 
         UserAddress userAddress = addressService.queryUserAddress(userId, addressId);
@@ -113,10 +116,41 @@ public class OrderServiceImpl implements OrderService {
         // 3保存订单状态表
         OrderStatus waitPayOrderStatus = new OrderStatus();
         waitPayOrderStatus.setOrderId(orderId);
-        waitPayOrderStatus.setOrderStatus(OrderStatusEnum.WAIT_DELIVER.type);
+        waitPayOrderStatus.setOrderStatus(OrderStatusEnum.WAIT_PAY.type);
         waitPayOrderStatus.setCreatedTime(new Date());
         orderStatusMapper.insert(waitPayOrderStatus);
 
-        return orderId;
+        // 4构建商户订单，用于传送给支付中心
+        MerchantOrdersVO merchantOrdersVO = new MerchantOrdersVO();
+        merchantOrdersVO.setMerchantOrderId(orderId);
+        int amount = realPayAmount + postAmount;
+//          暂时将金额设置为0。01元，方便测试，
+//        amount = 1;
+        merchantOrdersVO.setAmount(amount);
+        merchantOrdersVO.setMerchantUserId(userId);
+        merchantOrdersVO.setPayMethod(payMethod);
+
+        // 5构建自定义订单VO
+        OrderVO orderVO = new OrderVO();
+        orderVO.setOrderId(orderId);
+        orderVO.setMerchantOrdersVO(merchantOrdersVO);
+
+        return orderVO;
+    }
+
+    @Override
+    @Transactional(propagation = Propagation.REQUIRED)
+    public void updateOrderStatus(String orderId, Integer status) {
+        OrderStatus orderStatus = new OrderStatus();
+        orderStatus.setOrderId(orderId);
+        orderStatus.setOrderStatus(status);
+        orderStatus.setPayTime(new Date());
+        orderStatusMapper.updateByPrimaryKeySelective(orderStatus);
+    }
+
+    @Override
+    public OrderStatus queryStatusByOrderId(String orderId) {
+        OrderStatus orderStatus = orderStatusMapper.selectByPrimaryKey(orderId);
+        return orderStatus;
     }
 }

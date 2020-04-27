@@ -8,4 +8,8 @@ public class BaseController {
     public static final Integer PAGE_SIZE = 20;
 
     public static final String FOODIE_SHOPCART = "shopcart";
+
+    //支付成功后-》支付中心-》本系统的执行的回调函数地址
+    public String payRequestUrl = "heep://localhost:8088/orders/notifyerchantOrderPaid";
+    public String paymentUrl = "http://payment.t.mukewang.com/foodie-payment/payment/createMerchantOrder";
 }
