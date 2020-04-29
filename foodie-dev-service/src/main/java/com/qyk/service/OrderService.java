@@ -9,4 +9,5 @@ public interface OrderService {
     public void updateOrderStatus(String orderId, Integer Status);
 
     OrderStatus queryStatusByOrderId(String orderId);
+    void closeTimeOutOrder();
 }

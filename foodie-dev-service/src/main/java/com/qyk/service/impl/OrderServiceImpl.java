@@ -10,6 +10,7 @@ import com.qyk.pojo.bo.SubmitOrderBO;
 import com.qyk.pojo.vo.MerchantOrdersVO;
 import com.qyk.pojo.vo.OrderVO;
 import com.qyk.service.OrderService;
+import com.qyk.utils.DateUtil;
 import org.n3r.idworker.Sid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -17,6 +18,7 @@ import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Date;
+import java.util.List;
 
 @Service
 public class OrderServiceImpl implements OrderService {
@@ -149,8 +151,36 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
+    @Transactional(propagation = Propagation.SUPPORTS)
     public OrderStatus queryStatusByOrderId(String orderId) {
         OrderStatus orderStatus = orderStatusMapper.selectByPrimaryKey(orderId);
         return orderStatus;
+    }
+
+    @Override
+    @Transactional(propagation = Propagation.REQUIRED)
+    public void closeTimeOutOrder() {
+        //查询所有未付款订单查询是否超时（目前为1day）
+        OrderStatus orderStatus = new OrderStatus();
+        orderStatus.setOrderStatus(OrderStatusEnum.WAIT_PAY.type);
+        List<OrderStatus> orderStatusList = orderStatusMapper.select(orderStatus);
+        for (OrderStatus status : orderStatusList) {
+            //对比时间，判断其是否超时
+            Date createdTime = status.getCreatedTime();
+            int daysBetween = DateUtil.daysBetween(createdTime, new Date());
+            if (daysBetween >= 1) {
+                //已超时，关闭订单
+
+            }
+        }
+    }
+
+    @Transactional(propagation = Propagation.REQUIRED)
+    void doCloseOrder(String orderId){
+        OrderStatus closeOrderStatus = new OrderStatus();
+        closeOrderStatus.setOrderId(orderId);
+        closeOrderStatus.setOrderStatus(OrderStatusEnum.CLOSE.type);
+        closeOrderStatus.setCloseTime(new Date());
+        orderStatusMapper.updateByPrimaryKeySelective(closeOrderStatus);
     }
 }
