@@ -17,6 +17,6 @@ public interface CenterUserService {
      * 修改用户信息
      * @param centerUserBO
      */
-    void updateUserInfo(String userId,CenterUserBO centerUserBO);
+    Users updateUserInfo(String userId, CenterUserBO centerUserBO);
 
 }

@@ -2,6 +2,13 @@ package com.qyk.pojo.bo.center;
 
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
+import org.hibernate.validator.constraints.Email;
+import org.hibernate.validator.constraints.Length;
+import org.hibernate.validator.constraints.NotBlank;
+
+import javax.validation.constraints.Max;
+import javax.validation.constraints.Min;
+import javax.validation.constraints.Pattern;
 
 /**
  * 封装用户注册入参
@@ -18,18 +25,25 @@ public class CenterUserBO {
     @ApiModelProperty(value = "确认密码", name = "confirmPassword", example = "123456", required = true)
     private String confirmPassword;
 
+    @NotBlank(message = "请填写昵称")
+    @Length(max = 12,message = "用户昵称不能超过12位")
     @ApiModelProperty(value = "用户昵称", name = "nickname", example = "qyk", required = true)
     private String nickname;
 
+    @Length(max = 12,message = "用户真实姓名不能超过12位")
     @ApiModelProperty(value = "真实姓名", name = "realname", example = "qyk", required = true)
     private String realname;
 
+    @Pattern(regexp = "^(((13[0-9]{1})|(15[0-9]{1})|(18[0-9]{1}))+\\d{8})$")
     @ApiModelProperty(value = "手机号", name = "mobile", example = "13999999999", required = true)
     private String mobile;
 
+    @Email
     @ApiModelProperty(value = "邮箱地址", name = "email", example = "qyk@qq.com", required = true)
     private String email;
 
+    @Min(value = 0,message = "性别不正确")
+    @Max(value = 2,message = "性别不正确")
     @ApiModelProperty(value = "性别", name = "sex", example = "0，女；1，男；2，保密", required = true)
     private String sex;
 
