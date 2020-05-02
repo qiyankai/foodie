@@ -10,6 +10,7 @@ import com.qyk.utils.JsonUtils;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
+import org.apache.commons.io.IOUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
@@ -19,7 +20,7 @@ import org.springframework.web.multipart.MultipartFile;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
-import java.io.File;
+import java.io.*;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -66,7 +67,7 @@ public class CenterUserController extends BaseController {
         String imageUserFileLocationPath = IMAGE_USER_FILE_LOCATION;
         // 在文件路径上增加一个路径，通过userId来区分不同用户路径
         String uploadFilePrefix = File.separator + userId;
-
+        FileOutputStream fileOutputStream = null;
         if (file != null) {
             // 存放规则，face-{userId}.jpg
             String originalFilename = file.getOriginalFilename();
@@ -78,6 +79,24 @@ public class CenterUserController extends BaseController {
             if (outFile.getParentFile() != null) {
                 //创建文件
                 outFile.mkdirs();
+            }
+
+            //输出文件
+            try {
+                fileOutputStream = new FileOutputStream(outFile);
+                InputStream inputStream = file.getInputStream();
+                IOUtils.copy(inputStream, fileOutputStream);
+            } catch (IOException e) {
+                e.printStackTrace();
+            } finally {
+                if (fileOutputStream != null) {
+                    try {
+                        fileOutputStream.flush();
+                    fileOutputStream.close();
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                }
             }
         } else {
             return JSONResult.errorMsg("请勿上传空文件！");
