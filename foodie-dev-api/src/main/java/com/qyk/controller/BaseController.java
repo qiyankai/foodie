@@ -14,6 +14,7 @@ public class BaseController {
     // 支付成功后-》支付中心-》本系统的执行的回调函数地址
     public String payRequestUrl = "http://eqmnqs.natappfree.cc/orders/notifyMerchantOrderPaid";
     public String paymentUrl = "http://payment.t.mukewang.com/foodie-payment/payment/createMerchantOrder";
+    // 待更新
 
     // 用户上传头像位置
     public static final String IMAGE_USER_FILE_LOCATION = File.separator + "Users" +

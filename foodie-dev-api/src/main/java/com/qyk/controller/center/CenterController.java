@@ -18,6 +18,7 @@ public class CenterController {
     @Autowired
     private CenterUserService centerUserService;
 
+    // 待更新
     @ApiOperation(value = "获取用户信息", notes = "获取用户信息", httpMethod = "GET")
     @GetMapping("userInfo")
     public JSONResult userInfo(@ApiParam(name = "userId", value = "用户ID", required = true) String userId) {

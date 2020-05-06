@@ -15,6 +15,7 @@ import javax.validation.constraints.Pattern;
  */
 @ApiModel(value = "用户对象BO", description = "封装客户端入参")
 public class CenterUserBO {
+    // 待更新
 
     @ApiModelProperty(value = "用户名", name = "username", example = "qyk", required = true)
     private String username;
