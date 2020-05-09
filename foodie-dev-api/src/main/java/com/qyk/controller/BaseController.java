@@ -16,6 +16,7 @@ public class BaseController {
     public String paymentUrl = "http://payment.t.mukewang.com/foodie-payment/payment/createMerchantOrder";
     // 待更新
 
+
     // 用户上传头像位置
     public static final String IMAGE_USER_FILE_LOCATION = File.separator + "Users" +
             File.separator + "qiyankai" +
