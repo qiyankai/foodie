@@ -55,7 +55,7 @@ public class CenterUserController extends BaseController {
     }
 
     @ApiOperation(value = "上传用户头像", notes = "上传用户头像", httpMethod = "POST")
-    @PostMapping("update")
+    @PostMapping("upload")
     public JSONResult updateUserInfo(
             @ApiParam(name = "userId", value = "用户ID", required = true)
             @RequestParam String userId,
