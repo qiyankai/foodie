@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 @Api(value = "center - 用户中心", tags = {"用户中心展示的相关接口"})
 @RestController
-@RequestMapping("center ")
+@RequestMapping("center")
 public class CenterController {
 
     @Autowired

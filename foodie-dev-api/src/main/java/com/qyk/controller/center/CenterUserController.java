@@ -11,6 +11,7 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import org.apache.commons.io.IOUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
@@ -55,7 +56,7 @@ public class CenterUserController extends BaseController {
     }
 
     @ApiOperation(value = "上传用户头像", notes = "上传用户头像", httpMethod = "POST")
-    @PostMapping("upload")
+    @PostMapping("uploadFace")
     public JSONResult updateUserInfo(
             @ApiParam(name = "userId", value = "用户ID", required = true)
             @RequestParam String userId,
@@ -71,33 +72,38 @@ public class CenterUserController extends BaseController {
         if (file != null) {
             // 存放规则，face-{userId}.jpg
             String originalFilename = file.getOriginalFilename();
-            String[] fileNameArr = originalFilename.split("\\.");
-            String suffix = fileNameArr[fileNameArr.length - 1];
-            String fileName = "face-" + userId + new Date().getTime() + "." + suffix;
-            String finalFacePath = uploadFilePrefix + File.separator + fileName;
-            File outFile = new File(finalFacePath);
-            if (outFile.getParentFile() != null) {
-                //创建文件
-                outFile.mkdirs();
-            }
+            if (StringUtils.isNotBlank(originalFilename)){
+                String[] fileNameArr = originalFilename.split("\\.");
+                // 这是文件后缀名
+                String suffix = fileNameArr[fileNameArr.length - 1];
+                String fileName = "face-" + userId + new Date().getTime() + "." + suffix;
+                // 最终上传位置，本地上传地址+用户文件夹+文件名
+                String finalFacePath = imageUserFileLocationPath + uploadFilePrefix + File.separator + fileName;
+                File outFile = new File(finalFacePath);
+                if (outFile.getParentFile() != null) {
+                    //创建夫路径文件夹
+                    outFile.getParentFile().mkdirs();
+                }
 
-            //输出文件
-            try {
-                fileOutputStream = new FileOutputStream(outFile);
-                InputStream inputStream = file.getInputStream();
-                IOUtils.copy(inputStream, fileOutputStream);
-            } catch (IOException e) {
-                e.printStackTrace();
-            } finally {
-                if (fileOutputStream != null) {
-                    try {
-                        fileOutputStream.flush();
-                    fileOutputStream.close();
-                    } catch (IOException e) {
-                        e.printStackTrace();
+                //输出文件
+                try {
+                    fileOutputStream = new FileOutputStream(outFile);
+                    InputStream inputStream = file.getInputStream();
+                    IOUtils.copy(inputStream, fileOutputStream);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                } finally {
+                    if (fileOutputStream != null) {
+                        try {
+                            fileOutputStream.flush();
+                            fileOutputStream.close();
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
                     }
                 }
             }
+
         } else {
             return JSONResult.errorMsg("请勿上传空文件！");
         }
