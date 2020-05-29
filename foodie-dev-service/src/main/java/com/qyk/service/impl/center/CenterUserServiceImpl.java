@@ -28,12 +28,23 @@ public class CenterUserServiceImpl implements CenterUserService {
 
     @Override
     @Transactional(propagation = Propagation.REQUIRED)
+    public Users updateUserFace(String userId, String faceUrl) {
+        Users updateUsers = new Users();
+        updateUsers.setUpdatedTime(new Date());
+        updateUsers.setId(userId);
+        updateUsers.setFace(faceUrl);
+        usersMapper.updateByPrimaryKeySelective(updateUsers);
+        return updateUsers;
+    }
+
+    @Override
+    @Transactional(propagation = Propagation.REQUIRED)
     public Users updateUserInfo(String userId, CenterUserBO centerUserBO) {
         Users users = new Users();
         BeanUtils.copyProperties(centerUserBO, users);
         users.setId(userId);
         users.setUpdatedTime(new Date());
         usersMapper.updateByPrimaryKeySelective(users);
-        return users;
+        return queryUserInfo(userId);
     }
 }

@@ -19,4 +19,10 @@ public interface CenterUserService {
      */
     Users updateUserInfo(String userId, CenterUserBO centerUserBO);
 
+    /**
+     * 修改用户信息
+     * @param faceUrl
+     */
+    Users updateUserFace(String userId, String faceUrl);
+
 }
