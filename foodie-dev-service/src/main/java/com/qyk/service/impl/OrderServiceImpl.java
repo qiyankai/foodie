@@ -6,6 +6,7 @@ import com.qyk.mapper.OrderItemsMapper;
 import com.qyk.mapper.OrderStatusMapper;
 import com.qyk.mapper.OrdersMapper;
 import com.qyk.pojo.*;
+import com.qyk.pojo.bo.ShopcartBO;
 import com.qyk.pojo.bo.SubmitOrderBO;
 import com.qyk.pojo.vo.MerchantOrdersVO;
 import com.qyk.pojo.vo.OrderVO;
@@ -17,6 +18,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -43,7 +45,7 @@ public class OrderServiceImpl implements OrderService {
 
     @Transactional(propagation = Propagation.REQUIRED)
     @Override
-    public OrderVO create(SubmitOrderBO submitOrderBO) {
+    public OrderVO create(SubmitOrderBO submitOrderBO, List<ShopcartBO> shopcartBOList) {
         // 1。新订单保存
         Integer payMethod = submitOrderBO.getPayMethod();
         String addressId = submitOrderBO.getAddressId();
@@ -80,12 +82,16 @@ public class OrderServiceImpl implements OrderService {
         String[] itemSpecIdArr = itemSpecIds.split(",");
         Integer totalAmount = 0;
         Integer realPayAmount = 0;
+        List<ShopcartBO> needToDeleteShopCartList = new ArrayList<>();
         for (String itemSpecId : itemSpecIdArr) {
-            ItemsSpec itemsSpec = itemService.queryItemSpecById(itemSpecId);
-            // todo 整合redis后，商品购买数量由redis中获取
-            int buyCounts = 1;
+            // 现在从redis中找
+            ShopcartBO shopcartBO = getCartByRedisList(itemSpecId, shopcartBOList);
+            needToDeleteShopCartList.add(shopcartBO);
+            // 整合redis后，商品购买数量由redis中获取
+            int buyCounts = shopcartBO.getBuyCounts();
 
             // 2。1 根据规格获取价格
+            ItemsSpec itemsSpec = itemService.queryItemSpecById(itemSpecId);
             totalAmount += itemsSpec.getPriceNormal() * buyCounts;
             realPayAmount += itemsSpec.getPriceDiscount() * buyCounts;
 
@@ -109,7 +115,7 @@ public class OrderServiceImpl implements OrderService {
             orderItemsMapper.insert(subOrderItems);
 
             // 2。4提交订单后，规格表中，需要扣除库存
-            itemService.decreaseItemSpecStock(itemSpecId,buyCounts);
+            itemService.decreaseItemSpecStock(itemSpecId, buyCounts);
         }
 
         newOrders.setTotalAmount(totalAmount);
@@ -136,8 +142,18 @@ public class OrderServiceImpl implements OrderService {
         OrderVO orderVO = new OrderVO();
         orderVO.setOrderId(orderId);
         orderVO.setMerchantOrdersVO(merchantOrdersVO);
+        orderVO.setNeedToDeleteShopCartList(needToDeleteShopCartList);
 
         return orderVO;
+    }
+
+    private ShopcartBO getCartByRedisList(String itemSpecId, List<ShopcartBO> shopcartBOList) {
+        for (ShopcartBO shopcartBO : shopcartBOList) {
+            if (shopcartBO.getSpecId().equals(itemSpecId)) {
+                return shopcartBO;
+            }
+        }
+        return null;
     }
 
     @Override
@@ -176,7 +192,7 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Transactional(propagation = Propagation.REQUIRED)
-    void doCloseOrder(String orderId){
+    void doCloseOrder(String orderId) {
         OrderStatus closeOrderStatus = new OrderStatus();
         closeOrderStatus.setOrderId(orderId);
         closeOrderStatus.setOrderStatus(OrderStatusEnum.CLOSE.type);
