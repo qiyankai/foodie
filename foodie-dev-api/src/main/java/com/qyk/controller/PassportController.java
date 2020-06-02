@@ -101,6 +101,7 @@ public class PassportController {
         if (StringUtils.isBlank(username) || StringUtils.isBlank(password)) {
             return JSONResult.errorMsg("用户名或者密码不能为空！");
         }
+
         // 1. 实现登录
         Users userResult = userService.queryUserForLogin(username, MD5Utils.getMD5Str(password));
         if (userResult == null) {
