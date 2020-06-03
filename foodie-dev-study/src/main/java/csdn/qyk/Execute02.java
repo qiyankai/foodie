@@ -11,9 +11,9 @@ public class Execute02 {
 
         // 初始化需要刷的博客地址
 
-        ExecutorService executorService = Executors.newFixedThreadPool(50);
-        for (int i = 1; i <= 50; i++) {
-            executorService.execute(new Thread(new RefreshBlogThread(i*3000),"thread-refresh-"+i));
+        ExecutorService executorService = Executors.newFixedThreadPool(300);
+        for (int i = 1; i <= 300; i++) {
+            executorService.execute(new Thread(new RefreshBlogThread(i*5000),"thread-refresh-"+i));
         }
 
     }

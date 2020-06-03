@@ -1,5 +1,6 @@
 package csdn;
 
+import com.qyk.utils.RedisOperator;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
 import org.jsoup.Jsoup;
@@ -10,30 +11,39 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Random;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.Future;
+import java.util.concurrent.atomic.AtomicInteger;
 
-public class RefreshBlogThread implements Runnable {
+public class RefreshBlogThreadNew implements Runnable {
 
-    private Logger logger = Logger.getLogger(RefreshBlogThread.class);
     //本地博客地址文本中的文章数量
     private int blogUrlSize = 0;
     //本地博客地址文本装入HashMap中
     private static HashMap<Integer, String> LocalBlogUrl = null;
     //本地博客地址访问统计
-    private HashMap<Integer, Integer> LocalBlogUrlCount = null;
+    private HashMap<Integer, AtomicInteger> LocalBlogUrlCount = null;
+    private RedisOperator redisOperator;
     //访问总量统计
-    private int count = 0;
+    private AtomicInteger count = null;
     private int sleepSec = 0;
+    private String proxyOrderId = "";
 
-    public RefreshBlogThread(int sleepSec) {
-        if (LocalBlogUrl == null) {
-            LocalBlogUrl = getLocalBlogUrl();
-        }
+    public RefreshBlogThreadNew(int sleepSec, RedisOperator redisOperator, HashMap<Integer, String> localBlogUrl, HashMap<Integer, AtomicInteger> localBlogUrlCount, AtomicInteger count) {
+        this.redisOperator = redisOperator;
+        this.LocalBlogUrl = localBlogUrl;
         this.sleepSec = sleepSec;
-        blogUrlSize = LocalBlogUrl.size();
-        LocalBlogUrlCount = initLocalBlogUrlCount();
+        this.blogUrlSize = LocalBlogUrl.size();
+        this.LocalBlogUrlCount = localBlogUrlCount;
+        this.count = count;
+
+    }
+
+    public RefreshBlogThreadNew(int sleepSec, HashMap<Integer, String> localBlogUrl, HashMap<Integer, AtomicInteger> localBlogUrlCount, AtomicInteger count, String proxyOrderId) {
+        this.proxyOrderId = proxyOrderId;
+        this.LocalBlogUrl = localBlogUrl;
+        this.sleepSec = sleepSec;
+        this.blogUrlSize = LocalBlogUrl.size();
+        this.LocalBlogUrlCount = localBlogUrlCount;
+        this.count = count;
 
     }
 
@@ -50,16 +60,8 @@ public class RefreshBlogThread implements Runnable {
         }
         while (true) {
             //比如你的订单号是123456789，每次你想提取200个代理进行使用，就应该是
-            //http://tvp.daxiangdaili.com/ip/?tid=123456789&num=200&delay=5
-            String url = "http://tvp.daxiangdaili.com/ip/?tid=558114351287931&num=50&delay=3";
-
+            String url = "http://tvp.daxiangdaili.com/ip/?tid="+proxyOrderId+"&num=200&delay=5";
             List<MyIp> ipList = getIp(url);
-            System.out.println(Thread.currentThread().getName() + "---------start-----------");
-            for (MyIp myIp : ipList) {
-                System.out.print(myIp.toString());
-            }
-            System.out.println(Thread.currentThread().getName() + "---------end  -----------");
-
             for (MyIp myIp : ipList) {
                 System.setProperty("http.maxRedirects", "50");
                 System.getProperties().setProperty("proxySet", "true");
@@ -73,19 +75,18 @@ public class RefreshBlogThread implements Runnable {
                             id = randomBlogUrl();
                             urlStr = LocalBlogUrl.get(id);
                         }
-                        System.out.println("当前访问的url-----==========" + urlStr);
-                        Document doc = Jsoup.connect(urlStr)
+                        Document doc = Jsoup.connect(LocalBlogUrl.get(id))
                                 .userAgent("Mozilla")
                                 .cookie("auth", "token")
                                 .timeout(3000)
                                 .get();
                         if (doc != null) {
-                            count++;
-                            LocalBlogUrlCount.put(id, LocalBlogUrlCount.get(id) + 1);
-                            System.out.print("ID： " + id + "\tAddress： " + (urlStr + "\t成功刷新次数: " + count + "\t") + "Proxy： " + myIp.toString() + "\t");
+                            count.incrementAndGet();
+                            LocalBlogUrlCount.get(id).incrementAndGet();
+//                            LocalBlogUrlCount.put(id, LocalBlogUrlCount.get(id) + 1);
+                            System.out.print("ID： " + id + "\tAddress： " + (LocalBlogUrl.get(id) + "\t成功刷新次数: " + count + "\t") + "Proxy： " + myIp.toString() + "\t");
                         }
                     } catch (IOException e) {
-                        logger.error(myIp.getAddress() + ":" + myIp.getPort() + "报错");
                     }
 
                     try {
@@ -96,7 +97,6 @@ public class RefreshBlogThread implements Runnable {
                     show();
                 }
             }
-
         }
     }
 
@@ -130,7 +130,9 @@ public class RefreshBlogThread implements Runnable {
                 System.out.println("当前使用ipStr----------" + ipStr);
                 //3.用正则表达式去切割所有的ip
                 String[] ips = ipStr.split("\\s+");
-
+                if (redisOperator != null) {
+                    redisOperator.lpush("ip-list", ipStr);
+                }
                 //4.循环遍历得到的ip字符串，封装成MyIp的bean
                 ipList = new ArrayList<MyIp>();
                 for (final String ip : ips) {
@@ -152,55 +154,11 @@ public class RefreshBlogThread implements Runnable {
         return ipList;
     }
 
-    //获取本地BlogUrl.txt文本中的博客地址，并装入hashMap中，key=Integer,value=博客地址
-    public static HashMap<Integer, String> getLocalBlogUrl() {
-
-        HashMap<Integer, String> hashMap = new HashMap<Integer, String>();
-        int id = 1;
-        hashMap.put(id++, "https://blog.csdn.net/Mrkaizi/article/details/106178717");
-        hashMap.put(id++, "https://blog.csdn.net/Mrkaizi/article/details/106242794");
-        hashMap.put(id++, "https://blog.csdn.net/Mrkaizi/article/details/80622506");
-        hashMap.put(id++, "https://blog.csdn.net/Mrkaizi/article/details/106319166");
-        hashMap.put(id++, "https://blog.csdn.net/Mrkaizi/article/details/106298394");
-        hashMap.put(id++, "https://blog.csdn.net/Mrkaizi/article/details/106453822");
-        hashMap.put(id++, "https://blog.csdn.net/Mrkaizi/article/details/106174047");
-        hashMap.put(id++, "https://blog.csdn.net/Mrkaizi/article/details/106451002");
-        hashMap.put(id++, "https://blog.csdn.net/Mrkaizi/article/details/106300644");
-        hashMap.put(id++, "https://blog.csdn.net/Mrkaizi/article/details/88639291");
-        hashMap.put(id++, "https://blog.csdn.net/Mrkaizi/article/details/80533631");
-        hashMap.put(id++, "https://blog.csdn.net/Mrkaizi/article/details/105280200");
-        hashMap.put(id++, "https://blog.csdn.net/Mrkaizi/article/details/80533552");
-        hashMap.put(id++, "https://blog.csdn.net/Mrkaizi/article/details/80449534");
-        hashMap.put(id++, "https://blog.csdn.net/Mrkaizi/article/details/106364852");
-        hashMap.put(id++, "https://blog.csdn.net/Mrkaizi/article/details/105286124");
-        hashMap.put(id++, "https://blog.csdn.net/Mrkaizi/article/details/106245934");
-        hashMap.put(id++, "https://blog.csdn.net/Mrkaizi/article/details/106298365");
-        hashMap.put(id++, "https://blog.csdn.net/Mrkaizi/article/details/83149050");
-        hashMap.put(id++, "https://blog.csdn.net/Mrkaizi/article/details/106298383");
-        hashMap.put(id++, "https://blog.csdn.net/Mrkaizi/article/details/99590533");
-        hashMap.put(id++, "https://blog.csdn.net/Mrkaizi/article/details/80449107");
-        hashMap.put(id++, "https://blog.csdn.net/Mrkaizi/article/details/106171001");
-        hashMap.put(id++, "https://blog.csdn.net/Mrkaizi/article/details/81743216");
-        hashMap.put(id++, "https://blog.csdn.net/Mrkaizi/article/details/106174196");
-        hashMap.put(id++, "https://blog.csdn.net/Mrkaizi/article/details/106363632");
-        hashMap.put(id++, "https://blog.csdn.net/Mrkaizi/article/details/106102567");
-        return hashMap;
-    }
-
     //休眠进程，单位是分钟,CSDN的规则好像是：每个IP访问一个博客地址的时间间隔是5-15分钟，计数一次
     public void sleepThread(int s) throws InterruptedException {
         long ms = s * 1000;
         Thread.sleep(ms);
         System.out.println("睡眠： " + s + "s");
-    }
-
-    //访问统计
-    public HashMap<Integer, Integer> initLocalBlogUrlCount() {
-        HashMap<Integer, Integer> temp = new HashMap<Integer, Integer>();
-        for (int i = 0; i < blogUrlSize; i++) {
-            temp.put(i, 0);
-        }
-        return temp;
     }
 
     //展示访问统计总量

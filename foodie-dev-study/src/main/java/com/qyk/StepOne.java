@@ -1,4 +1,4 @@
-package csdn;
+package com.qyk;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -11,15 +11,7 @@ import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-/*
- * --------------------自动刷CSDN博客访问量程序--------------------
- *
- * 将要刷访问量的博客id填写入24行的变量userId中，点击运行
- * 本程序访问该博主【用户ID】名下所有博客链接
- *
- * 仅供学习测试使用，不要真的用于刷访问量~
- */
-public class UrlCrawBokePro {
+public class StepOne {
 
     static String userId = "Mrkaizi";
     static int random_num = 0;
@@ -62,26 +54,6 @@ public class UrlCrawBokePro {
         for (String s:urls) {
             System.out.println("hashMap.put(id++, \""+s+"\");");
         }
-        System.out.println("打印每个链接完毕");
-
-        // ---------------------------------------------------访问每个链接---------------------------------------------------
-        int i=0;
-        for (String s:urls) {
-            int num = 0;
-            System.out.print("成功访问第" + (++i) + "个链接"+s+",共" );
-            while (num++<100) {
-                if(random_num++%2==0) {
-                    Thread.sleep(1000+187);
-                }else {
-                    Thread.sleep(1000+243);
-                }
-                doGet(s);
-            }
-            System.out.println( --num+ "次:" );
-        }
-
-        // ---------------------------------------------------程序结束---------------------------------------------------
-        System.out.println("运行完毕，成功增加访问数：" + urls.size()*100);
     }
     public static InputStream doGet(String urlstr) throws IOException {
         URL url = new URL(urlstr);
