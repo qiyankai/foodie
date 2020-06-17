@@ -19,63 +19,26 @@ public class 有序二维数组查找 {
         matrix[3] = row3;
         matrix[4] = row4;
 
-        findNumberIn2DArray(matrix, 5);
+        System.out.println(findNumberIn2DArray(matrix, 10));
 
     }
-
-    public static boolean findNumberIn2DArray2(int[][] matrix, int target) {
-        int width = matrix[0].length;
-        int height = matrix[0].length;
-
-
-
-        return false;
-    }
-
 
     public static boolean findNumberIn2DArray(int[][] matrix, int target) {
-        for (int i = 0; i < matrix[0].length; i++) {
-
-
+        if (matrix == null || matrix.length == 0 || matrix[0].length == 0) {
+            return false;
         }
-        // 二分法找到哪行
-        int left = 0, right = matrix[0].length, mid = 0;
-        while (left <= right) {
-            mid = (left + right) / 2;
-            if (target == matrix[mid][0]) {
+        int rows = matrix.length, columns = matrix[0].length;
+        int row = 0, column = columns - 1;
+        while (row < rows && column >= 0) {
+            int num = matrix[row][column];
+            if (num == target) {
                 return true;
-            } else if (target > matrix[mid][0]) {
-                left = mid + 1;
-            } else if (target < matrix[mid][0]) {
-                right = mid - 1;
+            } else if (num > target) {
+                column--;
+            } else {
+                row++;
             }
-
-            System.out.println("left--" + left);
-            System.out.println("mid--" + mid);
-            System.out.println("right--" + right);
-            System.out.println("------------------------------");
-
         }
-
-        left = 1;
-        right = matrix[mid].length;
-        int[] rowArr = matrix[mid];
-        while (left <= right) {
-            mid = (left + right) / 2;
-            if (target == rowArr[mid]) {
-                return true;
-            } else if (target > rowArr[0]) {
-                left = mid + 1;
-            } else if (target < rowArr[0]) {
-                right = mid - 1;
-            }
-
-            System.out.println("left--" + left);
-            System.out.println("mid--" + mid);
-            System.out.println("right--" + right);
-
-        }
-
         return false;
     }
 
