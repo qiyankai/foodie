@@ -27,3 +27,61 @@ todo：模拟高并发下业务场景，并逐个解决，以此提升系统性�
 8、分布式唯一主键，雪花算法
 9、接口幂等性、分布式限流
 
+
+## Here is the English version
+
+# foodie
+
+This is a mall type project, breaking the inherent thinking of moving bricks, and developing is not just adding, deleting, modifying and checking. Based on this project, we can use the learned technology and thinking, and try to solve the concurrent problems under microservice with various implementation ideas.
+
+
+
+With the latest technology, customers can shop freely when they have huge instantaneous access, and propose a new distributed microservice solution to cope with high concurrency and high availability, including not limited to current limiting, peak clipping, service fusing, service degradation, distributed transactions, high availability cache.
+
+
+
+Project launch: [Click to visit]（ http://47.94.138.137/foodie-shop/ )
+
+
+
+This project is based on the imooc actual combat, extends the extended open source project, and shares various implementation ideas to solve the concurrency problem under the microservice.
+
+As technology sharing, all payments of the system are only for test use, do not pay!
+
+
+
+In the future, I will update the relevant technical documents to my personal blog and share the technology!
+
+ya hoo～
+
+
+
+Front end Vue, back end springboot
+
+High availability distributed deployment with nginx + preserved
+
+
+
+Personal blog address [Click to visit CSDN blog]（ https://blog.csdn.net/Mrkaizi )
+
+
+
+Todo: simulate high and send out business scenarios, and solve them one by one, so as to improve the upper limit of system performance
+
+1. Redis integration
+
+2. Elasticsearch as a distributed search engine
+
+3. SSO single sign on
+
+4. Fastdfs distributed file system
+
+5. Distributed message queuing rabbitmq
+
+6、Kafka
+
+7. Read write separation, database and table, integrated with MYCAT or sharding
+
+8. Distributed unique primary key, snowflake algorithm
+
+9. Interface idempotence, distributed current limiting
