@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ProjectModuleManager">
+    <modules>
+      <module fileurl="file://$PROJECT_DIR$/foodie-dev.iml" filepath="$PROJECT_DIR$/foodie-dev.iml" />
+      <module fileurl="file://$PROJECT_DIR$/foodie-dev-api/foodie-dev-api.iml" filepath="$PROJECT_DIR$/foodie-dev-api/foodie-dev-api.iml" />
+      <module fileurl="file://$PROJECT_DIR$/foodie-dev-common/foodie-dev-common.iml" filepath="$PROJECT_DIR$/foodie-dev-common/foodie-dev-common.iml" />
+      <module fileurl="file://$PROJECT_DIR$/foodie-dev-mapper/foodie-dev-mapper.iml" filepath="$PROJECT_DIR$/foodie-dev-mapper/foodie-dev-mapper.iml" />
+      <module fileurl="file://$PROJECT_DIR$/foodie-dev-pojo/foodie-dev-pojo.iml" filepath="$PROJECT_DIR$/foodie-dev-pojo/foodie-dev-pojo.iml" />
+      <module fileurl="file://$PROJECT_DIR$/foodie-dev-service/foodie-dev-service.iml" filepath="$PROJECT_DIR$/foodie-dev-service/foodie-dev-service.iml" />
+      <module fileurl="file://$PROJECT_DIR$/foodie-dev-study/foodie-dev-study.iml" filepath="$PROJECT_DIR$/foodie-dev-study/foodie-dev-study.iml" />
+    </modules>
+  </component>
+</project>
