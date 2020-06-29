@@ -33,16 +33,6 @@ package algorithm;
 //leetcode submit region begin(Prohibit modification and deletion)
 
 
-class TreeNode {
-    int val;
-    TreeNode left;
-    TreeNode right;
-
-    TreeNode(int x) {
-        val = x;
-    }
-}
-
 public class 重建二叉树 {
     public static void main(String[] args) {
         int[] preorder = {3, 1, 2, 4};
