@@ -1,6 +1,5 @@
 package algorithm;
 
-import java.util.Stack;
 
 public class 从头到尾打印链表 {
     public int[] reversePrint(ListNode head) {
