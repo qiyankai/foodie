@@ -1,4 +1,4 @@
-package algorithm;
+package algorithm.二叉树;
 
 class TreeNode {
     int val;
