@@ -1,4 +1,4 @@
-package algorithm;
+package algorithm.排序;
 
 public class QuickSort {
     public static void main(String[] args) {

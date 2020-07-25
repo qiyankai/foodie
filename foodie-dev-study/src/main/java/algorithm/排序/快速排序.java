@@ -1,4 +1,4 @@
-package algorithm;
+package algorithm.排序;
 
 public class 快速排序 {
     public static void main(String[] args) {
