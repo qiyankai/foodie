@@ -1,12 +1,17 @@
 package com.qyk.controller;
 
 import com.qyk.pojo.Orders;
+import com.qyk.pojo.Users;
+import com.qyk.pojo.vo.UserVo;
 import com.qyk.service.center.MyOrdersService;
 import com.qyk.utils.JSONResult;
+import com.qyk.utils.RedisOperator;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 
 import java.io.File;
+import java.util.UUID;
 
 @Controller
 public class BaseController {
@@ -31,6 +36,9 @@ public class BaseController {
 
 
     @Autowired
+    private RedisOperator redisOperator;
+
+    @Autowired
     public MyOrdersService myOrdersService;
 
     /**
@@ -44,4 +52,15 @@ public class BaseController {
         }
         return JSONResult.ok(order);
     }
+
+    public UserVo convertUserVo(Users userResult) {
+        String token = UUID.randomUUID().toString();
+        redisOperator.set(SHOP_USER_TOKEN + ":" + userResult.getId(), token);
+        UserVo userVo = new UserVo();
+        userVo.setToken(token);
+        BeanUtils.copyProperties(userResult, userVo);
+        return userVo;
+    }
+
+
 }

@@ -3,6 +3,7 @@ package com.qyk.controller.center;
 import com.qyk.controller.BaseController;
 import com.qyk.pojo.Users;
 import com.qyk.pojo.bo.center.CenterUserBO;
+import com.qyk.pojo.vo.UserVo;
 import com.qyk.resource.FileUpload;
 import com.qyk.service.center.CenterUserService;
 import com.qyk.utils.CookieUtils;
@@ -54,8 +55,9 @@ public class CenterUserController extends BaseController {
         }
         Users userResult = centerUserService.updateUserInfo(userId, centerUserBO);
 
-        setNullProperty(userResult);
-        CookieUtils.setCookie(request, response, "user", JsonUtils.objectToJson(userResult), true);
+        UserVo userVo = convertUserVo(userResult);
+//        setNullProperty(userResult);
+        CookieUtils.setCookie(request, response, "user", JsonUtils.objectToJson(userVo), true);
 
         return JSONResult.ok();
     }
@@ -87,10 +89,10 @@ public class CenterUserController extends BaseController {
 
                 // 防攻击，防脚本
                 if (!suffix.equalsIgnoreCase("png") &&
-                        !suffix.equalsIgnoreCase("png")&&
-                        !suffix.equalsIgnoreCase("jpeg")&&
+                        !suffix.equalsIgnoreCase("png") &&
+                        !suffix.equalsIgnoreCase("jpeg") &&
                         !suffix.equalsIgnoreCase("gif")
-                ){
+                ) {
                     return JSONResult.errorMsg("图片格式不正确！");
                 }
 
@@ -138,8 +140,9 @@ public class CenterUserController extends BaseController {
         // 执行更新操作
         Users userResult = centerUserService.updateUserFace(userId, finelUserFaceWebUrl);
 
-        setNullProperty(userResult);
-        CookieUtils.setCookie(request, response, "user", JsonUtils.objectToJson(userResult), true);
+//        setNullProperty(userResult);
+        UserVo userVo = convertUserVo(userResult);
+        CookieUtils.setCookie(request, response, "user", JsonUtils.objectToJson(userVo), true);
 
 
         return JSONResult.ok();

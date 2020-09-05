@@ -68,7 +68,7 @@ public class OrderServiceImpl implements OrderService {
                 + " " + userAddress.getDistrict());
         newOrders.setReceiverMobile(userAddress.getMobile());
 
-        // todo 计算价格
+        // 计算价格
         newOrders.setPostAmount(postAmount);
 
         newOrders.setPayMethod(payMethod);

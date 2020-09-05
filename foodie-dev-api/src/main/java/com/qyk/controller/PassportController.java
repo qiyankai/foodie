@@ -100,16 +100,6 @@ public class PassportController extends BaseController {
         return JSONResult.ok();
     }
 
-    private UserVo convertUserVo(Users userResult) {
-        String token = UUID.randomUUID().toString();
-        redisOperator.set(SHOP_USER_TOKEN + ":" + userResult.getId(), token);
-        UserVo userVo = new UserVo();
-        userVo.setToken(token);
-        BeanUtils.copyProperties(userResult, userVo);
-        return userVo;
-    }
-
-
     /**
      * 用户登录
      *
