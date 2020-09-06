@@ -43,6 +43,7 @@ public class BaseController {
 
     /**
      * 用于验证用户和订单是否有关联关系，避免非法用户调用
+     *
      * @return
      */
     public JSONResult checkUserOrder(String userId, String orderId) {
@@ -57,7 +58,7 @@ public class BaseController {
         String token = UUID.randomUUID().toString();
         redisOperator.set(SHOP_USER_TOKEN + ":" + userResult.getId(), token);
         UserVo userVo = new UserVo();
-        userVo.setToken(token);
+        userVo.setUserUniqueToken(token);
         BeanUtils.copyProperties(userResult, userVo);
         return userVo;
     }

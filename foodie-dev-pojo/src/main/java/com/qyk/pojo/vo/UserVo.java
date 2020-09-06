@@ -24,7 +24,7 @@ public class UserVo {
     /**
      * token
      */
-    private String token;
+    private String userUniqueToken;
 
     /**
      * 性别 性别 1:男  0:女  2:保密
@@ -40,12 +40,12 @@ public class UserVo {
         return id;
     }
 
-    public String getToken() {
-        return token;
+    public String getUserUniqueToken() {
+        return userUniqueToken;
     }
 
-    public void setToken(String token) {
-        this.token = token;
+    public void setUserUniqueToken(String userUniqueToken) {
+        this.userUniqueToken = userUniqueToken;
     }
 
     /**
