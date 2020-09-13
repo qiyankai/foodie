@@ -6,11 +6,12 @@
         <sourceOutputDir name="target/generated-sources/annotations" />
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
-        <module name="foodie-dev-api" />
-        <module name="foodie-dev-common" />
-        <module name="foodie-dev-mapper" />
         <module name="foodie-dev-pojo" />
+        <module name="foodie-dev-api" />
+        <module name="foodie-dev-mapper" />
         <module name="foodie-dev-service" />
+        <module name="foodie-dev-sso" />
+        <module name="foodie-dev-common" />
         <module name="foodie-dev-study" />
       </profile>
     </annotationProcessing>
@@ -21,6 +22,7 @@
       <module name="foodie-dev-mapper" target="1.8" />
       <module name="foodie-dev-pojo" target="1.8" />
       <module name="foodie-dev-service" target="1.8" />
+      <module name="foodie-dev-sso" target="1.8" />
       <module name="foodie-dev-study" target="1.8" />
     </bytecodeTargetLevel>
   </component>
@@ -31,6 +33,7 @@
       <module name="foodie-dev-mapper" options="-parameters" />
       <module name="foodie-dev-pojo" options="-parameters" />
       <module name="foodie-dev-service" options="-parameters" />
+      <module name="foodie-dev-sso" options="-parameters" />
       <module name="foodie-dev-study" options="-parameters" />
     </option>
   </component>

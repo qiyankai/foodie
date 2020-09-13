@@ -13,8 +13,6 @@ import tk.mybatis.spring.annotation.MapperScan;
 @MapperScan(basePackages = "com.qyk.mapper")
 // 扫描所有包及其相关组件包
 @ComponentScan(basePackages = {"com.qyk", "org.n3r.idworker"})
-@EnableScheduling
-//@EnableRedisHttpSession// 开启使用redis作为Spring Session
 public class Application {
 
     public static void main(String[] args) {
