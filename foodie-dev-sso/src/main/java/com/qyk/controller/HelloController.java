@@ -23,6 +23,7 @@ import java.util.UUID;
 
 /**
  * 用来测试的controller
+ * 单点登录测试接口
  * 加上 @ApiIgnore 就不会被加到swagger2文档里了
  */
 @Controller
