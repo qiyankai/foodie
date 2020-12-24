@@ -8,6 +8,7 @@
       <module fileurl="file://$PROJECT_DIR$/foodie-dev-mapper/foodie-dev-mapper.iml" filepath="$PROJECT_DIR$/foodie-dev-mapper/foodie-dev-mapper.iml" />
       <module fileurl="file://$PROJECT_DIR$/foodie-dev-pojo/foodie-dev-pojo.iml" filepath="$PROJECT_DIR$/foodie-dev-pojo/foodie-dev-pojo.iml" />
       <module fileurl="file://$PROJECT_DIR$/foodie-dev-service/foodie-dev-service.iml" filepath="$PROJECT_DIR$/foodie-dev-service/foodie-dev-service.iml" />
+      <module fileurl="file://$PROJECT_DIR$/foodie-dev-sso/foodie-dev-sso.iml" filepath="$PROJECT_DIR$/foodie-dev-sso/foodie-dev-sso.iml" />
       <module fileurl="file://$PROJECT_DIR$/foodie-dev-study/foodie-dev-study.iml" filepath="$PROJECT_DIR$/foodie-dev-study/foodie-dev-study.iml" />
     </modules>
   </component>

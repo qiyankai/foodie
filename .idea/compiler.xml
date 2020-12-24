@@ -6,11 +6,11 @@
         <sourceOutputDir name="target/generated-sources/annotations" />
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
-        <module name="foodie-dev-pojo" />
-        <module name="foodie-dev-service" />
         <module name="foodie-dev-api" />
         <module name="foodie-dev-common" />
         <module name="foodie-dev-mapper" />
+        <module name="foodie-dev-pojo" />
+        <module name="foodie-dev-service" />
         <module name="foodie-dev-study" />
       </profile>
     </annotationProcessing>
@@ -26,12 +26,12 @@
   </component>
   <component name="JavacSettings">
     <option name="ADDITIONAL_OPTIONS_OVERRIDE">
-      <module name="foodie-dev-api" options="-parameters" />
-      <module name="foodie-dev-common" options="-parameters" />
-      <module name="foodie-dev-mapper" options="-parameters" />
-      <module name="foodie-dev-pojo" options="-parameters" />
-      <module name="foodie-dev-service" options="-parameters" />
-      <module name="foodie-dev-study" options="-parameters" />
+      <module name="foodie-dev-api" options="" />
+      <module name="foodie-dev-common" options="" />
+      <module name="foodie-dev-mapper" options="" />
+      <module name="foodie-dev-pojo" options="" />
+      <module name="foodie-dev-service" options="" />
+      <module name="foodie-dev-study" options="" />
     </option>
   </component>
 </project>
