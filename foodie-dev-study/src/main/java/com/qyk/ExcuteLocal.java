@@ -33,7 +33,7 @@ public class ExcuteLocal {
         // 看你心情设置
         // 线程数量，电脑好点的自信点来个1000，大概一天能刷2w-4w，不建议设置太高size（50-2000）=访问量（5k～50k）
         // ==========================================================
-        int threadSize = 300;
+        int threadSize = 500;
 
 
 
@@ -47,9 +47,10 @@ public class ExcuteLocal {
         // 初始化总计数器，使用原子类，直接调用incr方法，防止线程间同时写入，导致的ABA问题
         AtomicInteger count = new AtomicInteger();
 
-        ExecutorService executorService = Executors.newFixedThreadPool(threadSize);
+        ExecutorService executorService = Executors.newFixedThreadPool(20);
         for (int i = 1; i <= threadSize; i++) {
-            executorService.execute(new Thread(new RefreshBlogThreadNew(i * 10000, localBlogUrl, localBlogUrlCount, count, proxyOrderId), "thread-refresh-" + i));
+//            executorService.execute(new Thread(new RefreshBlogThreadNew(i * 10000, localBlogUrl, localBlogUrlCount, count, proxyOrderId), "thread-refresh-" + i));
+            executorService.execute(new RefreshBlogThreadNew(i * 10000, localBlogUrl, localBlogUrlCount, count, proxyOrderId));
         }
     }
 
@@ -63,9 +64,44 @@ public class ExcuteLocal {
         hashMap.put(id++, "https://blog.csdn.net/Mrkaizi/article/details/106524423");
         hashMap.put(id++, "https://blog.csdn.net/Mrkaizi/article/details/106524423");
         hashMap.put(id++, "https://blog.csdn.net/Mrkaizi/article/details/106524423");
+        hashMap.put(id++, "https://blog.csdn.net/Mrkaizi/article/details/106524423");
+        hashMap.put(id++, "https://blog.csdn.net/Mrkaizi/article/details/106524423");
+        hashMap.put(id++, "https://blog.csdn.net/Mrkaizi/article/details/106524423");
+        hashMap.put(id++, "https://blog.csdn.net/Mrkaizi/article/details/106524423");
         hashMap.put(id++, "https://blog.csdn.net/Mrkaizi/article/details/106527760");
         hashMap.put(id++, "https://blog.csdn.net/Mrkaizi/article/details/106527760");
         hashMap.put(id++, "https://blog.csdn.net/Mrkaizi/article/details/106527760");
+        hashMap.put(id++, "https://blog.csdn.net/Mrkaizi/article/details/106527760");
+        hashMap.put(id++, "https://blog.csdn.net/Mrkaizi/article/details/106527760");
+        hashMap.put(id++, "https://blog.csdn.net/Mrkaizi/article/details/106527760");
+        hashMap.put(id++, "https://blog.csdn.net/Mrkaizi/article/details/106527760");
+        hashMap.put(id++, "https://blog.csdn.net/Mrkaizi/article/details/106178717");
+        hashMap.put(id++, "https://blog.csdn.net/Mrkaizi/article/details/106242794");
+        hashMap.put(id++, "https://blog.csdn.net/Mrkaizi/article/details/80622506");
+        hashMap.put(id++, "https://blog.csdn.net/Mrkaizi/article/details/106319166");
+        hashMap.put(id++, "https://blog.csdn.net/Mrkaizi/article/details/106298394");
+        hashMap.put(id++, "https://blog.csdn.net/Mrkaizi/article/details/106453822");
+        hashMap.put(id++, "https://blog.csdn.net/Mrkaizi/article/details/106174047");
+        hashMap.put(id++, "https://blog.csdn.net/Mrkaizi/article/details/106451002");
+        hashMap.put(id++, "https://blog.csdn.net/Mrkaizi/article/details/106300644");
+        hashMap.put(id++, "https://blog.csdn.net/Mrkaizi/article/details/88639291");
+        hashMap.put(id++, "https://blog.csdn.net/Mrkaizi/article/details/80533631");
+        hashMap.put(id++, "https://blog.csdn.net/Mrkaizi/article/details/105280200");
+        hashMap.put(id++, "https://blog.csdn.net/Mrkaizi/article/details/80533552");
+        hashMap.put(id++, "https://blog.csdn.net/Mrkaizi/article/details/80449534");
+        hashMap.put(id++, "https://blog.csdn.net/Mrkaizi/article/details/106364852");
+        hashMap.put(id++, "https://blog.csdn.net/Mrkaizi/article/details/105286124");
+        hashMap.put(id++, "https://blog.csdn.net/Mrkaizi/article/details/106245934");
+        hashMap.put(id++, "https://blog.csdn.net/Mrkaizi/article/details/106298365");
+        hashMap.put(id++, "https://blog.csdn.net/Mrkaizi/article/details/83149050");
+        hashMap.put(id++, "https://blog.csdn.net/Mrkaizi/article/details/106298383");
+        hashMap.put(id++, "https://blog.csdn.net/Mrkaizi/article/details/99590533");
+        hashMap.put(id++, "https://blog.csdn.net/Mrkaizi/article/details/80449107");
+        hashMap.put(id++, "https://blog.csdn.net/Mrkaizi/article/details/106171001");
+        hashMap.put(id++, "https://blog.csdn.net/Mrkaizi/article/details/81743216");
+        hashMap.put(id++, "https://blog.csdn.net/Mrkaizi/article/details/106174196");
+        hashMap.put(id++, "https://blog.csdn.net/Mrkaizi/article/details/106363632");
+        hashMap.put(id++, "https://blog.csdn.net/Mrkaizi/article/details/106102567");
         // ----------------------------指定位置
 
         return hashMap;
