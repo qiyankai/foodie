@@ -52,11 +52,11 @@ public class Sid {
         return yyMMdd + Utils.padLeft(Utils.encode(id), 10, '0');
     }
     
-//    public static void main(String[] args) {
-//		String aa = new Sid().nextShort();
-//		String bb = new Sid().next();
-//
-//		System.out.println(aa);
-//		System.out.println(bb);
-//	}
+    public static void main(String[] args) {
+		String aa = new Sid().nextShort();
+		String bb = new Sid().next();
+
+		System.out.println(aa);
+		System.out.println(bb);
+	}
 }

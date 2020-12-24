@@ -68,6 +68,10 @@ public class JSONResult {
         return new JSONResult(556, msg, null);
     }
 
+    public static JSONResult errorUserTicket(String msg) {
+        return new JSONResult(557, msg, null);
+    }
+
     public JSONResult() {
 
     }

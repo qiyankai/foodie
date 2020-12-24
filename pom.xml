@@ -16,6 +16,7 @@
         <module>foodie-dev-service</module>
         <module>foodie-dev-api</module>
         <module>foodie-dev-study</module>
+        <module>foodie-dev-sso</module>
     </modules>
 
     <!--
@@ -103,6 +104,18 @@
             <groupId>tk.mybatis</groupId>
             <artifactId>mapper-spring-boot-starter</artifactId>
             <version>2.1.5</version>
+        </dependency>
+
+        <!-- 通用mapper逆向工具 -->
+        <dependency>
+            <groupId>org.springframework.session</groupId>
+            <artifactId>spring-session-data-redis</artifactId>
+        </dependency>
+
+        <!-- 通用mapper逆向工具 -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-security</artifactId>
         </dependency>
 
         <!-- 通用mapper逆向工具 -->

@@ -7,10 +7,21 @@ spring:
     username: root
     password: root
   redis:
+    # 单机单实例
     database: 0
     host: localhost
     port: 6379
+    password: 123456
 
+    #    集群
+#    cluster:
+#      nodes: 10.211.55.4:6379,10.211.55.5:6379,10.211.55.6:6379
+
+    # 哨兵模式
+#    database: 0
+#    sentinel:
+#      nodes: 10.211.55.4:26379,10.211.55.5:26379,10.211.55.6:26379
+#      master: qyk-master
 mybatis:
   configuration:
     log-impl: org.apache.ibatis.logging.stdout.StdOutImpl

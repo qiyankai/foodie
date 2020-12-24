@@ -61,7 +61,7 @@ public class OrderController extends BaseController {
         // 从redis中取出该清除的购物车物品，现在直接清空
         //        CookieUtils.setCookie(request,response,FOODIE_SHOPCART,"");
         List<ShopcartBO> needToDeleteShopCartList = orderVO.getNeedToDeleteShopCartList();
-        deleteShopCartToList(needToDeleteShopCartList, shopcartBOList);
+        shopcartBOList.removeAll(needToDeleteShopCartList);
         redisOperator.set(FOODIE_SHOPCART + ":" + submitOrderBO.getUserId(), JsonUtils.objectToJson(shopcartBOList));
         // 整合redis之后，完善购物车中的已结算商品清除，并且同步到前端的cookie
         CookieUtils.setCookie(request, response, FOODIE_SHOPCART, JsonUtils.objectToJson(shopcartBOList), true);
