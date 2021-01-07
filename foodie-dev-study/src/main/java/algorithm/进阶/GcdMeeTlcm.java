@@ -4,7 +4,7 @@ import java.io.File;
 import java.io.PrintWriter;
 import java.util.Scanner;
 
-public class gcdMeeTlcm {
+public class GcdMeeTlcm {
     static File inF;
     static File outF;
     static PrintWriter write;
